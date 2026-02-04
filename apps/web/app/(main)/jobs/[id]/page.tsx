@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import JobDetailClient from "@/app/components/JobDetailClient";
 import { supabase } from "@shared/utils/supabaseClient";
 
