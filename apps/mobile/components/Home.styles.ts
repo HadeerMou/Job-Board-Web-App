@@ -41,7 +41,7 @@ export const createStyles = (colors: any) =>
       color: colors.text,
     },
     filterButton: {
-      backgroundColor: colors.tint,
+      backgroundColor: colors.buttonBackground,
       padding: 12,
       borderRadius: 8,
       alignItems: "center",

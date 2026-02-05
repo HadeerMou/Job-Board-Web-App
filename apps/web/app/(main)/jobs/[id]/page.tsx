@@ -11,7 +11,6 @@ interface Job {
   created_at: string;
 }
 
-// Server Component — NO "use client"
 export default async function JobDetailPage({
   params,
 }: {
