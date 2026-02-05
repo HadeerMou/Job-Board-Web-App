@@ -6,10 +6,12 @@ module.exports = function (api) {
       [
         "module-resolver",
         {
+          root: ["./"],
           alias: {
-            "@shared": "../../shared",
+            "@shared/utils": "../../packages/utils",
+            "@shared/ui": "../../packages/ui",
           },
-          extensions: [".js", ".jsx", ".ts", ".tsx"],
+          extensions: [".ts", ".tsx", ".js", ".jsx"],
         },
       ],
     ],

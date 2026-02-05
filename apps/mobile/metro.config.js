@@ -3,15 +3,21 @@ const path = require("path");
 
 const config = getDefaultConfig(__dirname);
 
-// Include root node_modules and packages folder
+const workspaceRoot = path.resolve(__dirname, "../../"); // root of monorepo
+
 config.watchFolders = [
-  path.resolve(__dirname, "../../node_modules"),
-  path.resolve(__dirname, "../../packages"),
+  workspaceRoot, // watch the whole repo
 ];
 
-config.resolver.extraNodeModules = {
-  react: path.resolve(__dirname, "../../node_modules/react"),
-  "react-native": path.resolve(__dirname, "../../node_modules/react-native"),
+config.resolver = {
+  ...config.resolver,
+  extraNodeModules: new Proxy(
+    {},
+    {
+      get: (_, name) => path.join(workspaceRoot, "node_modules", name), // redirect all node_modules to root
+    },
+  ),
+  sourceExts: [...config.resolver.sourceExts, "ts", "tsx"],
 };
 
 module.exports = config;
