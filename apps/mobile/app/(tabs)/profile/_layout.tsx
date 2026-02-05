@@ -1,47 +1,33 @@
-import { Tabs } from "expo-router";
+import { Slot } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { supabase } from "@shared/utils/supabaseClient";
+import { useThemeMode } from "@/context/ThemeModeContext";
 
-export default function ProfileTabsLayout() {
+export default function ProfileLayout() {
+  const { colors } = useThemeMode();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
+    supabase.auth.getUser().then(() => {
       setLoading(false);
     });
   }, []);
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#4f46e5" />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.background,
+        }}
+      >
+        <ActivityIndicator size="large" color={colors.tint} />
       </View>
     );
   }
 
-  return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: "#4f46e5",
-        tabBarInactiveTintColor: "#999",
-      }}
-    >
-      <Tabs.Screen
-        name="index" // Profile main page
-        options={{ title: "Profile" }}
-      />
-      <Tabs.Screen
-        name="applications" // Profile > Applications page
-        options={{ title: "Applications" }}
-      />
-      <Tabs.Screen
-        name="cv" // Profile > CV page
-        options={{ title: "CV" }}
-      />
-    </Tabs>
-  );
+  return <Slot />;
 }

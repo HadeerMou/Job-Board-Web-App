@@ -7,21 +7,25 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { supabase } from "@shared/utils/supabaseClient";
-import UserApplicationCard from "../../../../components/ApplicationCard";
+import UserApplicationCard from "../../../components/ApplicationCard";
 
-interface Job {
+/* ---------- Types ---------- */
+
+export interface Job {
   id: string;
   title: string;
   company: string;
   location?: string;
 }
 
-interface Application {
+export interface Application {
   id: number;
   status: string;
   created_at: string;
-  jobs: Job[] | null;
+  jobs: Job[] | null; // ✅ ARRAY
 }
+
+/* ---------- Component ---------- */
 
 export default function UserApplications() {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -34,11 +38,8 @@ export default function UserApplications() {
   async function fetchMyApplications() {
     setLoading(true);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) {
       setLoading(false);
       return;
     }
@@ -48,7 +49,6 @@ export default function UserApplications() {
       .select(
         `
         id,
-        cover_letter,
         status,
         created_at,
         jobs:job_id (
@@ -59,10 +59,13 @@ export default function UserApplications() {
         )
       `,
       )
-      .eq("user_id", user.id)
+      .eq("user_id", auth.user.id)
       .order("created_at", { ascending: false });
 
-    if (!error) setApplications(data ?? []);
+    if (!error && data) {
+      setApplications(data as Application[]);
+    }
+
     setLoading(false);
   }
 
@@ -92,10 +95,12 @@ export default function UserApplications() {
   );
 }
 
+/* ---------- Styles ---------- */
+
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    gap: 12, // like space-y-4
+    gap: 12,
   },
   center: {
     flex: 1,
