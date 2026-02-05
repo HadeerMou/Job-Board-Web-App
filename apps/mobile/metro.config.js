@@ -5,19 +5,22 @@ const config = getDefaultConfig(__dirname);
 
 const workspaceRoot = path.resolve(__dirname, "../../"); // root of monorepo
 
+// Watch the shared packages and root node_modules
 config.watchFolders = [
-  workspaceRoot, // watch the whole repo
+  workspaceRoot,
+  path.resolve(workspaceRoot, "packages/utils"),
+  path.resolve(workspaceRoot, "packages/ui"),
 ];
 
-config.resolver = {
-  ...config.resolver,
-  extraNodeModules: new Proxy(
-    {},
-    {
-      get: (_, name) => path.join(workspaceRoot, "node_modules", name), // redirect all node_modules to root
-    },
-  ),
-  sourceExts: [...config.resolver.sourceExts, "ts", "tsx"],
-};
+// Redirect all node_modules to root node_modules
+config.resolver.extraNodeModules = new Proxy(
+  {},
+  {
+    get: (_, name) => path.join(workspaceRoot, "node_modules", name),
+  }
+);
+
+// Support .ts and .tsx extensions
+config.resolver.sourceExts = [...config.resolver.sourceExts, "ts", "tsx"];
 
 module.exports = config;

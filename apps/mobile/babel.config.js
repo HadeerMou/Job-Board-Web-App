@@ -6,7 +6,6 @@ module.exports = function (api) {
       [
         "module-resolver",
         {
-          root: ["./"],
           alias: {
             "@shared/utils": "../../packages/utils",
             "@shared/ui": "../../packages/ui",
